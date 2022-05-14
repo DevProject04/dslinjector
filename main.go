@@ -17,11 +17,28 @@ var (
 	{
 		"Authorization": "Bot ` + *token + `"
 	}`
-	data      = []byte(slashData)
+	data = []byte(slashData)
 )
 
 func init() {
 	flag.Parse()
+	if *clientId == "" {
+		log.Fatalln("Client id can't be null!")
+		return
+	}
+
+	if *guildId == "" {
+		log.Fatalln("Guild id can't be null!")
+		return
+	}
+
+	if *token == "" {
+		log.Fatalln("Token can't be null!")
+	}
+
+	if slashData == "" {
+		log.Fatalln("You must type in slash command data!")
+	}
 }
 
 func derefString(s *string) string {
@@ -40,4 +57,3 @@ func main() {
 	}
 	defer resp.Body.Close()
 }
-
