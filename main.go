@@ -8,24 +8,28 @@ import (
 )
 
 var (
-	url     string
-	headers string
-	data    []byte
+	clientId  = flag.String("clientId", "", "discord client id")
+	guildId   = flag.String("guildId", "", "discord guild id")
+	token     = flag.String("token", "TOKEN", "")
+	slashData = derefString(flag.String("data", "", "json command data"))
+	url       = "https://discord.com/api/v8/applications/" + *clientId + "/guilds/" + *guildId + "/commands"
+	headers   = `
+	{
+		"Authorization": "Bot ` + *token + `"
+	}`
+	data      = []byte(slashData)
 )
 
 func init() {
-	guildId := flag.String("guildId", "", "discord guild id")
-	clientId := flag.String("clientId", "", "discord client id")
-	token := flag.String("token", "TOKEN", "")
-	dataPointer := derefString(flag.String("data", "", "json command data"))
-	data = []byte(dataPointer)
+	flag.Parse()
+}
 
-	url = "https://discord.com/api/v8/applications/" + *clientId + "/guilds/" + *guildId + "/commands"
-	headers = `
-	{
-		"Authorization": "Bot ` + *token + `"
+func derefString(s *string) string {
+	if s != nil {
+		return *s
 	}
-	`
+
+	return ""
 }
 
 func main() {
@@ -37,10 +41,3 @@ func main() {
 	defer resp.Body.Close()
 }
 
-func derefString(s *string) string {
-	if s != nil {
-		return *s
-	}
-
-	return ""
-}
